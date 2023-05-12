@@ -123,7 +123,12 @@ class Crewmate extends AdventureScene {
             .setInteractive()
             .on('pointerover', () => this.showMessage("Go to main area"))
             .on('pointerdown', () => {
-                this.gotoScene("main");
+                if(this.hasItem("spacesuit")){
+                    this.gotoScene("main");
+                } else {
+                    this.showMessage("Don't forget your spacesuit!");
+                    this.shake(hatch);
+                }
             });
         
         this.item_shine(hatch);
