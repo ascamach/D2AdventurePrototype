@@ -162,4 +162,18 @@ class AdventureScene extends Phaser.Scene {
             repeat: -1
         });
     }
+
+    // New method
+    // Simplified the shake tween to a method
+
+    shake(item) {
+        this.tweens.add({
+            targets: item,
+            x: '+=' + this.s,
+            repeat: 2,
+            yoyo: true,
+            ease: 'Sine.inOut',
+            duration: 100
+        });
+    }
 }

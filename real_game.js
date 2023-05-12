@@ -104,25 +104,27 @@ class Crewmate extends AdventureScene {
 
         let spacesuit = this.add.image(this.w * 0.375, this.h * 0.8, "spacesuit")
             .setInteractive()
-            .on('pointerover', () => this.showMessage("A spacesuit. May come in handy."))
+            .on('pointerover', () => {
+                this.showMessage("A spacesuit. Will come in handy.");
+            })
             .on('pointerdown', () => {
                 this.showMessage("You equipped the spacesuit.");
-                this.gainItem('spacesuit');
+                this.gainItem("spacesuit");
                 this.tweens.add({
                     targets: spacesuit,
                     y: `-=${2 * this.s}`,
                     alpha: {from: 1, to: 0},
                     duration: 500,
-                    onComplete: () => key.destroy()
+                    onComplete: () => spacesuit.destroy()
                 });
             })
-        
+
         let hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
-            .on('pointerover', () => this.showMessage("Hatch to main."))
+            .on('pointerover', () => this.showMessage("Go to main area"))
             .on('pointerdown', () => {
-              this.gotoScene("main");
-            })
+                this.gotoScene("main");
+            });
         
         this.item_shine(hatch);
         this.item_shine(spacesuit);
@@ -172,16 +174,26 @@ class Main extends AdventureScene {
                 this.gotoScene("outro");
             });
         
+        let crew_hatch = this.add.image(this.w * 0.35, this.h * 0.75, "hatch")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Go to crewmate room");
+            })
+            .on('pointerdown', () => {
+                this.showMessage("It locked itself on me...");
+                this.shake(crew_hatch);
+            })
+        
         let supplies_hatch = this.add.image(this.w * 0.175, this.h * 0.175, "hatch")
             .setInteractive()
             .on('pointerover', () => {
-                this.showMessage("The supplies room");
+                this.showMessage("Go to supplies room");
             })
             .on('pointerdown', () => {
                 this.gotoScene("supplies");
             });
 
-        let bridge_hatch = this.add.image(this.w * 0.5, this.h * 0.175, "hatch")
+        let bridge_hatch = this.add.image(this.w * 0.6, this.h * 0.175, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("Go to the bridge");
@@ -199,7 +211,7 @@ class Main extends AdventureScene {
                 this.gotoScene("engine");
             });
 
-        let captain_hatch = this.add.image(this.w * 0.5, this.h * 0.75, "hatch")
+        let captain_hatch = this.add.image(this.w * 0.6, this.h * 0.75, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("Go to the captain's room");
@@ -223,7 +235,19 @@ class Supplies extends AdventureScene {
         super("supplies", "Supplies Room");
     }
 
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("supplies_bg", "supplies_bg.png");
+        this.load.image("wire", "wire.png");
+    }
+
     onEnter() {
+        this.background = this.add.image(0,0,"supplies_bg")
+            .setOrigin(0,0);
+        // this.backgroundScale = 0.75;
+        this.background.displayWidth = this.w * 0.75;
+        this.background.displayHeight = this.h;
+
         this.add.text(this.w * 0.2, this.h * 0.3, "This is the supplies room");
 
         let main_hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
@@ -234,8 +258,6 @@ class Supplies extends AdventureScene {
             .on('pointerdown', () => {
                 this.gotoScene("main");
             });
-
-        let locked = true;
 
         let num1 = this.add.text(this.w * 0.05, this.h * 0.8, "0")
             .setFontSize(50)
@@ -278,6 +300,22 @@ class Supplies extends AdventureScene {
                     num3.text = (parseInt(num3.text) + 1);
                 }
             });
+
+        let wire = this.add.image(this.w * 0.375, this.h * 0.5, "wire")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Looks like the wire I need");
+            })
+            .on('pointerdown', () => {
+                this.gainItem("wire");
+                this.tweens.add({
+                    targets: wire,
+                        y: `-=${2 * this.s}`,
+                        alpha: { from: 1, to: 0 },
+                        duration: 500,
+                        onComplete: () => wire.destroy()
+                });
+            });
         
         let supplies_hatch = this.add.image(this.w * 0.1, this.h * 0.5, "hatch")
             .setInteractive()
@@ -289,14 +327,7 @@ class Supplies extends AdventureScene {
                     this.gotoScene("navigation");
                 } else {
                     this.showMessage("It seems to be locked.");
-                    this.tweens.add({
-                        targets: supplies_hatch,
-                        x: '+=' + this.s,
-                        repeat: 2,
-                        yoyo: true,
-                        ease: 'Sine.inOut',
-                        duration: 100
-                    });
+                    this.shake(supplies_hatch);
                 }
             });
 
@@ -313,6 +344,11 @@ class Navigation extends AdventureScene {
         super("navigation", "Navigation Room");
     }
 
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("navigation_monitor", "navigation_monitor.png");
+    }
+
     onEnter() {
         this.add.text(this.w * 0.2, this.h * 0.3, "This is the navigation room");
 
@@ -324,8 +360,23 @@ class Navigation extends AdventureScene {
             .on('pointerdown', () => {
                 this.gotoScene("supplies");
             });
+        
+        let nav_monitor = this.add.image(this.w * 0.15, this.h * 0.5, "navigation_monitor")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A directional map. This is extremely useful.");
+            })
+            .on('pointerdown', () => {
+                if(this.hasItem("directions")) {
+                    this.showMessage("Already have directions, we should be good to go.");
+                } else {
+                    this.showMessage("This'll be useful for the way back home.");
+                    this.gainItem('directions');
+                }
+            });
 
         this.item_shine(supplies_hatch);
+        this.item_shine(nav_monitor);
     }
 }
 
