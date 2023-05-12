@@ -88,12 +88,35 @@ class Crewmate extends AdventureScene {
         super("crewmate", "Crewmate's Quarters");
     }
 
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("hatch", "hatch.png");
+        this.load.image("crewmate_bg", "crewmate.png");
+    }
+
     onEnter() {
-        let test = this.add.text(this.w * 0.5, this.h * 0.5, "test message")
-            .setFontSize(this.s * 2)
+        this.background = this.add.image(0,0,"crewmate_bg")
+            .setOrigin(0,0);
+        // this.backgroundScale = 0.75;
+        this.background.displayWidth = this.w * 0.75;
+        this.background.displayHeight = this.h;
+        
+        let hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
-            .on('pointerover', () => this.showMessage("This is a test message."))
+            .on('pointerover', () => this.showMessage("Hatch to main."))
             .on('pointerdown', () => this.gotoScene("main"));
+        
+        this.item_shine(hatch);
+        /*
+        let fx = hatch.postFX.addShine(1, .2, 5);
+
+        this.tweens.add({
+            targets: hatch,
+            duration: 4000,
+            repeatDelay: 800,
+            repeat: -1
+        });
+        */
                 /*
                 this.showMessage("You have clicked this message.");
                 this.tweens.add({

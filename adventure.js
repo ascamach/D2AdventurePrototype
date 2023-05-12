@@ -147,4 +147,19 @@ class AdventureScene extends Phaser.Scene {
     onEnter() {
         console.warn('This AdventureScene did not implement onEnter():', this.constructor.name);
     }
+
+    // New Method
+    // Adds a shine effect to items that are interactable
+    // Credit from: https://labs.phaser.io/edit.html?src=src/fx/shine/shine%20fx.js
+
+    item_shine(item) {
+        let fx = item.postFX.addShine(1, .2, 5);
+
+        this.tweens.add({
+            targets: item,
+            duration: 4000,
+            repeatDelay: 800,
+            repeat: -1
+        });
+    }
 }
