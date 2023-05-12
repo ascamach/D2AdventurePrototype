@@ -591,6 +591,7 @@ class Captain extends AdventureScene {
 
 // ---------------------------------------------------------
 // Note text
+//
 
 class Note extends Phaser.Scene {
     constructor() {
