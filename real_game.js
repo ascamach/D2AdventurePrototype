@@ -1,3 +1,6 @@
+// ---------------------------------------------------------
+// Start screen for the player
+
 class Start extends Phaser.Scene {
     constructor() {
         super('start');
@@ -11,6 +14,9 @@ class Start extends Phaser.Scene {
         });
     }
 }
+
+// ---------------------------------------------------------
+// Display the somewhat fancy logo
 
 class Intro extends Phaser.Scene {
     constructor() {
@@ -37,11 +43,15 @@ class Intro extends Phaser.Scene {
             repeat: 0
         });
 
-        
-        this.cameras.main.fade(8000, 0,0,0);
-        this.time.delayedCall(8000, () => this.scene.start('beginning'));
+        // 8000
+        this.cameras.main.fade(1000, 0,0,0);
+        this.time.delayedCall(1000, () => this.scene.start('beginning'));
     }
 }
+
+
+// ---------------------------------------------------------
+// Beginning scene, explains the setting for the game
 
 class Beginning extends Phaser.Scene {
     constructor() {
@@ -55,6 +65,10 @@ class Beginning extends Phaser.Scene {
     }
 }
 
+
+// ---------------------------------------------------------
+// Outro scene
+
 class Outro extends Phaser.Scene {
     constructor() {
         super('outro');
@@ -66,17 +80,21 @@ class Outro extends Phaser.Scene {
     }
 } 
 
+// --------------------------------------------------------
+// Crewmate Quarters
+
 class Crewmate extends AdventureScene {
     constructor() {
         super("crewmate", "Crewmate's Quarters");
     }
 
     onEnter() {
-        let test = this.add.text(this.w * 0.3, this.w * 0.3, "test message")
+        let test = this.add.text(this.w * 0.5, this.h * 0.5, "test message")
             .setFontSize(this.s * 2)
             .setInteractive()
             .on('pointerover', () => this.showMessage("This is a test message."))
-            .on('pointerdown', () => {
+            .on('pointerdown', () => this.gotoScene("main"));
+                /*
                 this.showMessage("You have clicked this message.");
                 this.tweens.add({
                     targets: test,
@@ -86,9 +104,54 @@ class Crewmate extends AdventureScene {
                     ease: 'Sine.inOut',
                     duration: 100
                 });
+                */
+                // this.cameras.main.fade(1000, 0,0,0);
+    }
+}
+
+// ---------------------------------------------------------
+// Main Room
+
+class Main extends AdventureScene {
+    constructor() {
+        super("main", "Main Room");
+    }
+
+    onEnter() {
+        this.add.text(this.w * 0.3, this.w * 0.3, "This is the main room")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerdown', () => {
+                this.gotoScene("outro");
+            });
+        
+        this.add.text(this.w* 0.175, this.h * 0.175, "Navigation Room")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("The navigation room");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("navigation");
             });
     }
 }
+
+// ---------------------------------------------------------
+// Navigation Room
+
+class Navigation extends AdventureScene {
+    constructor() {
+        super("navigation", "Navigation Room");
+    }
+
+    onEnter() {
+        this.add.text(this.w * 0.2, this.h * 0.3, "This is the navigation room");
+    }
+}
+
+// ---------------------------------------------------------
+// Game constructor
 
 const game = new Phaser.Game({
     scale: {
@@ -97,6 +160,6 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Start, Intro, Beginning, Crewmate, Outro],
+    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Outro],
     title: "Adventure Game",
 });
