@@ -125,7 +125,7 @@ class Main extends AdventureScene {
                 this.gotoScene("outro");
             });
         
-        this.add.text(this.w* 0.175, this.h * 0.175, "Navigation Room")
+        this.add.text(this.w * 0.175, this.h * 0.175, "Navigation Room")
             .setFontSize(this.s * 2)
             .setInteractive()
             .on('pointerover', () => {
@@ -133,6 +133,36 @@ class Main extends AdventureScene {
             })
             .on('pointerdown', () => {
                 this.gotoScene("navigation");
+            });
+
+        this.add.text(this.w * 0.5, this.h * 0.175, "Bridge")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Go to the bridge");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("bridge");
+            });
+
+        this.add.text(this.w * 0.125, this.h * 0.75, "Engine")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Go to the engine room");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("engine");
+            });
+
+        this.add.text(this.w * 0.5, this.h * 0.75, "Captain's Room")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Go to the captain's room");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("captain");
             });
     }
 }
@@ -147,6 +177,85 @@ class Navigation extends AdventureScene {
 
     onEnter() {
         this.add.text(this.w * 0.2, this.h * 0.3, "This is the navigation room");
+
+        this.add.text(this.w * 0.5, this.h * 0.5, "Back to the main room")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Back to main room");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("main");
+            });
+    }
+}
+
+// ---------------------------------------------------------
+// The bridge
+
+class Bridge extends AdventureScene {
+    constructor () {
+        super("bridge", "The Bridge");
+    }
+
+    onEnter() {
+        this.add.text(this.w * 0.2, this.h * 0.3, "This is the bridge");
+
+        this.add.text(this.w * 0.5, this.h * 0.5, "Back to the main room")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Back to main room");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("main");
+            });
+    }
+}
+
+// ---------------------------------------------------------
+// Engine Room
+
+class Engine extends AdventureScene {
+    constructor () {
+        super("engine", "The Engine Room");
+    }
+
+    onEnter() {
+        this.add.text(this.w * 0.2, this.h * 0.3, "This is the engine room");
+
+        this.add.text(this.w * 0.5, this.h * 0.5, "Back to the main room")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Back to main room");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("main");
+            });
+    }
+}
+
+// ---------------------------------------------------------
+// Captain's Room
+
+class Captain extends AdventureScene {
+    constructor () {
+        super("captain", "The Captain's Room");
+    }
+
+    onEnter() {
+        this.add.text(this.w * 0.2, this.h * 0.3, "This is the captain's room");
+
+        this.add.text(this.w * 0.5, this.h * 0.5, "Back to the main room")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Back to main room");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("main");
+            });
     }
 }
 
@@ -160,6 +269,6 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Outro],
+    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Bridge, Captain, Engine, Outro],
     title: "Adventure Game",
 });
