@@ -102,7 +102,7 @@ class Crewmate extends AdventureScene {
         this.background.displayWidth = this.w * 0.75;
         this.background.displayHeight = this.h;
 
-        let spacesuit = this.add.image(this.w * 0.35, this.h * 0.8, "spacesuit")
+        let spacesuit = this.add.image(this.w * 0.375, this.h * 0.8, "spacesuit")
             .setInteractive()
             .on('pointerover', () => this.showMessage("A spacesuit. May come in handy."))
             .on('pointerdown', () => {
