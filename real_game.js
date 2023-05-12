@@ -604,7 +604,9 @@ class Note extends Phaser.Scene {
 
         this.add.text(50, 400, "The digits should be the number of beds in the crewmate quarters,\nnumber of hatches in the main area, and the squad number.").setFontSize(40);
 
-        this.add.text(50, 600, "Well, I guess I'll see you at ______! Have a safe trip.\nFrom,\n\n_________________").setFontSize(40);
+        this.add.text(50, 600, "Well, I guess I'll see you at ______! Have a safe trip.").setFontSize(40);
+
+        this.add.text(50, 650, "From: ______________").setFontSize(40);
 
         this.time.delayedCall(4000, () => {
             this.add.text(50, 900, "(click to return to scene)").setFontSize(25);
