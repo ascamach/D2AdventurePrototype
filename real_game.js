@@ -92,6 +92,7 @@ class Crewmate extends AdventureScene {
         this.load.path = "./assets/";
         this.load.image("hatch", "hatch.png");
         this.load.image("crewmate_bg", "crewmate.png");
+        this.load.image("spacesuit", "spacesuit.png");
     }
 
     onEnter() {
@@ -100,6 +101,21 @@ class Crewmate extends AdventureScene {
         // this.backgroundScale = 0.75;
         this.background.displayWidth = this.w * 0.75;
         this.background.displayHeight = this.h;
+
+        let spacesuit = this.add.image(this.w * 0.35, this.h * 0.8, "spacesuit")
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("A spacesuit. May come in handy."))
+            .on('pointerdown', () => {
+                this.showMessage("You equipped the spacesuit.");
+                this.gainItem('spacesuit');
+                this.tweens.add({
+                    targets: spacesuit,
+                    y: `-=${2 * this.s}`,
+                    alpha: {from: 1, to: 0},
+                    duration: 500,
+                    onComplete: () => key.destroy()
+                });
+            });
         
         let hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
@@ -107,6 +123,7 @@ class Crewmate extends AdventureScene {
             .on('pointerdown', () => this.gotoScene("main"));
         
         this.item_shine(hatch);
+        this.item_shine(spacesuit);
         /*
         let fx = hatch.postFX.addShine(1, .2, 5);
 
