@@ -120,7 +120,13 @@ class Crewmate extends AdventureScene {
         let hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
             .on('pointerover', () => this.showMessage("Hatch to main."))
-            .on('pointerdown', () => this.gotoScene("main"));
+            .on('pointerdown', () => {
+                if (this.hasItem("spacesuit")) {
+                    this.gotoScene("main");
+                } else {
+                    this.gotoScene("outro");
+                }
+            });
         
         this.item_shine(hatch);
         this.item_shine(spacesuit);
@@ -157,16 +163,20 @@ class Main extends AdventureScene {
         super("main", "Main Room");
     }
 
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("hatch", "hatch.png");
+    }
+
     onEnter() {
-        this.add.text(this.w * 0.3, this.w * 0.3, "This is the main room")
-            .setFontSize(this.s * 2)
+        this.add.text(this.w * 0.3, this.w * 0.3, "Main room")
+            .setFontSize(50)
             .setInteractive()
             .on('pointerdown', () => {
                 this.gotoScene("outro");
             });
         
-        this.add.text(this.w * 0.175, this.h * 0.175, "Navigation Room")
-            .setFontSize(this.s * 2)
+        let nav_hatch = this.add.image(this.w * 0.175, this.h * 0.175, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("The navigation room");
@@ -175,8 +185,7 @@ class Main extends AdventureScene {
                 this.gotoScene("navigation");
             });
 
-        this.add.text(this.w * 0.5, this.h * 0.175, "Bridge")
-            .setFontSize(this.s * 2)
+        let bridge_hatch = this.add.image(this.w * 0.5, this.h * 0.175, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("Go to the bridge");
@@ -185,8 +194,7 @@ class Main extends AdventureScene {
                 this.gotoScene("bridge");
             });
 
-        this.add.text(this.w * 0.125, this.h * 0.75, "Engine")
-            .setFontSize(this.s * 2)
+        let engine_hatch = this.add.image(this.w * 0.125, this.h * 0.75, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("Go to the engine room");
@@ -195,8 +203,7 @@ class Main extends AdventureScene {
                 this.gotoScene("engine");
             });
 
-        this.add.text(this.w * 0.5, this.h * 0.75, "Captain's Room")
-            .setFontSize(this.s * 2)
+        let captain_hatch = this.add.image(this.w * 0.5, this.h * 0.75, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("Go to the captain's room");
@@ -204,6 +211,11 @@ class Main extends AdventureScene {
             .on('pointerdown', () => {
                 this.gotoScene("captain");
             });
+
+        this.item_shine(nav_hatch);
+        this.item_shine(bridge_hatch);
+        this.item_shine(engine_hatch);
+        this.item_shine(captain_hatch);
     }
 }
 
