@@ -115,18 +115,14 @@ class Crewmate extends AdventureScene {
                     duration: 500,
                     onComplete: () => key.destroy()
                 });
-            });
+            })
         
         let hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
             .on('pointerover', () => this.showMessage("Hatch to main."))
             .on('pointerdown', () => {
-                if (this.hasItem("spacesuit")) {
-                    this.gotoScene("main");
-                } else {
-                    this.gotoScene("outro");
-                }
-            });
+              this.gotoScene("main");
+            })
         
         this.item_shine(hatch);
         this.item_shine(spacesuit);
@@ -163,7 +159,7 @@ class Main extends AdventureScene {
         super("main", "Main Room");
     }
 
-    preload() {
+    prelaod() {
         this.load.path = "./assets/";
         this.load.image("hatch", "hatch.png");
     }
@@ -176,13 +172,13 @@ class Main extends AdventureScene {
                 this.gotoScene("outro");
             });
         
-        let nav_hatch = this.add.image(this.w * 0.175, this.h * 0.175, "hatch")
+        let supplies_hatch = this.add.image(this.w * 0.175, this.h * 0.175, "hatch")
             .setInteractive()
             .on('pointerover', () => {
-                this.showMessage("The navigation room");
+                this.showMessage("The supplies room");
             })
             .on('pointerdown', () => {
-                this.gotoScene("navigation");
+                this.gotoScene("supplies");
             });
 
         let bridge_hatch = this.add.image(this.w * 0.5, this.h * 0.175, "hatch")
@@ -212,10 +208,100 @@ class Main extends AdventureScene {
                 this.gotoScene("captain");
             });
 
-        this.item_shine(nav_hatch);
+        this.item_shine(supplies_hatch);
         this.item_shine(bridge_hatch);
         this.item_shine(engine_hatch);
         this.item_shine(captain_hatch);
+    }
+}
+
+// ---------------------------------------------------------
+// Supplies Room
+
+class Supplies extends AdventureScene {
+    constructor() {
+        super("supplies", "Supplies Room");
+    }
+
+    onEnter() {
+        this.add.text(this.w * 0.2, this.h * 0.3, "This is the supplies room");
+
+        let main_hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Back to main room");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("main");
+            });
+
+        let locked = true;
+
+        let num1 = this.add.text(this.w * 0.05, this.h * 0.8, "0")
+            .setFontSize(50)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Seems like I can change the value of this number.");
+            })
+            .on('pointerdown', () => {
+                if(num1.text == 9) {
+                    num1.text = 0;
+                } else {
+                    num1.text = (parseInt(num1.text) + 1);
+                }
+            });
+
+        let num2 = this.add.text(this.w * 0.1, this.h * 0.8, "0").setFontSize(50)
+            .setFontSize(50)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Seems like I can change the value of this number.");
+            })
+            .on('pointerdown', () => {
+                if(num2.text == 9) {
+                    num2.text = 0;
+                } else {
+                    num2.text = (parseInt(num2.text) + 1);
+                }
+            });
+
+        let num3 = this.add.text(this.w * 0.15, this.h * 0.8, "0").setFontSize(50)
+            .setFontSize(50)
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Seems like I can change the value of this number.");
+            })
+            .on('pointerdown', () => {
+                if(num3.text == 9) {
+                    num3.text = 0;
+                } else {
+                    num3.text = (parseInt(num3.text) + 1);
+                }
+            });
+        
+        let supplies_hatch = this.add.image(this.w * 0.1, this.h * 0.5, "hatch")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("This leads to the supplies room.");
+            })
+            .on('pointerdown', () => {
+                if (num1.text == 2 && num2.text == 4 && num3.text == 7) {
+                    this.gotoScene("navigation");
+                } else {
+                    this.showMessage("It seems to be locked.");
+                    this.tweens.add({
+                        targets: supplies_hatch,
+                        x: '+=' + this.s,
+                        repeat: 2,
+                        yoyo: true,
+                        ease: 'Sine.inOut',
+                        duration: 100
+                    });
+                }
+            });
+
+        this.item_shine(main_hatch);
+        this.item_shine(supplies_hatch);
     }
 }
 
@@ -230,15 +316,16 @@ class Navigation extends AdventureScene {
     onEnter() {
         this.add.text(this.w * 0.2, this.h * 0.3, "This is the navigation room");
 
-        this.add.text(this.w * 0.5, this.h * 0.5, "Back to the main room")
-            .setFontSize(this.s * 2)
+        let supplies_hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
             .on('pointerover', () => {
-                this.showMessage("Back to main room");
+                this.showMessage("Back to supplies room");
             })
             .on('pointerdown', () => {
-                this.gotoScene("main");
+                this.gotoScene("supplies");
             });
+
+        this.item_shine(supplies_hatch);
     }
 }
 
@@ -321,6 +408,6 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Bridge, Captain, Engine, Outro],
+    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Bridge, Captain, Engine, Supplies, Outro],
     title: "Adventure Game",
 });
