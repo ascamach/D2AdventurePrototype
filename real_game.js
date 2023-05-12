@@ -6,8 +6,7 @@ class Start extends Phaser.Scene {
         super('start');
     }
     create() {
-        this.add.text(50,50, "Adventure awaits!").setFontSize(50);
-        this.add.text(50,100, "Click anywhere to begin.").setFontSize(20);
+        this.add.text(50,50, "Click anywhere to begin.").setFontSize(50);
         this.input.on('pointerdown', () => {
             this.cameras.main.fade(1000, 0,0,0);
             this.time.delayedCall(1000, () => this.scene.start('intro'));
@@ -59,26 +58,55 @@ class Beginning extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(50,50, "This is the beginning scene").setFontSize(50);
-
-        this.input.on('pointerdown', () => this.scene.start('crewmate'));
+        this.add.text(650, 400, "Isolated Space").setFontSize(70);
+        
+        this.time.delayedCall(2000, () => {
+            this.add.text(775, 600, "click to begin").setFontSize(40);
+            this.input.on('pointerdown', () => this.scene.start('crewmate'));
+        });
     }
 }
 
 
 // ---------------------------------------------------------
-// Outro scene
+// Bad end
 
-class Outro extends Phaser.Scene {
+class Bad_end extends Phaser.Scene {
     constructor() {
-        super('outro');
+        super('bad_end');
     }
     create() {
-        this.add.text(50, 50, "That's all!").setFontSize(50);
-        this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20);
-        this.input.on('pointerdown', () => this.scene.start('start'));
+        this.time.delayedCall(500, () => 
+            this.add.text(50,50, "You move the ship towards a direction.\nSome direction, not a specific one in general.\nYou realize that you're now drifting into deep space.").setFontSize(50)
+        );
+        
+        this.time.delayedCall(6000, () =>
+            this.add.text(50, 300,"Maybe if you have some directions that could help you...").setFontSize(50)
+        );
+
+        this.time.delayedCall(10000, () => {
+            this.add.text(50, 500, "(Click to restart.)").setFontSize(30);
+            this.input.on('pointerdown', () => this.scene.start('intro'));
+        });
     }
 } 
+
+// --------------------------------------------------------
+// Good ending
+
+/*
+class Good_end extends Phaser.scene {
+    constructor() {
+        super('good_end');
+    }
+
+    create() {
+        this.time.delayedCall(500, () =>
+        this.add.text("With the help of the captain")
+        );
+    }
+}
+*/
 
 // --------------------------------------------------------
 // Crewmate Quarters
@@ -253,7 +281,7 @@ class Supplies extends AdventureScene {
         this.background.displayWidth = this.w * 0.75;
         this.background.displayHeight = this.h;
 
-        this.add.text(this.w * 0.2, this.h * 0.3, "This is the supplies room");
+        // this.add.text(this.w * 0.2, this.h * 0.3, "This is the supplies room");
 
         let main_hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
@@ -355,7 +383,7 @@ class Navigation extends AdventureScene {
     }
 
     onEnter() {
-        this.add.text(this.w * 0.2, this.h * 0.3, "This is the navigation room");
+        // this.add.text(this.w * 0.2, this.h * 0.3, "This is the navigation room");
 
         let supplies_hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
@@ -393,11 +421,45 @@ class Bridge extends AdventureScene {
         super("bridge", "The Bridge");
     }
 
-    onEnter() {
-        this.add.text(this.w * 0.2, this.h * 0.3, "This is the bridge");
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("hatch", "hatch.png")
+        this.load.image("bridge_bg", "bridge_bg.png");
+        this.load.image("monitor", "monitor.png");
+    }
 
-        this.add.text(this.w * 0.5, this.h * 0.5, "Back to the main room")
-            .setFontSize(this.s * 2)
+    onEnter() {
+        this.background = this.add.image(0,0,"bridge_bg")
+            .setOrigin(0,0);
+        // this.backgroundScale = 0.75;
+        this.background.displayWidth = this.w * 0.75;
+        this.background.displayHeight = this.h;
+        // this.add.text(this.w * 0.2, this.h * 0.3, "This is the bridge");
+
+        this.add.image(this.w* 0.275, this.h*0.475, "monitor")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A monitor displaying multiple status updates of the ship.");
+            });
+
+        let main_monitor = this.add.image(this.w * 0.45, this.h * 0.475, "monitor")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("This seems to be the control panel for the ship.");
+            })
+            .on('pointerdown', () => {
+                if (this.hasItem("directions" && this.hasItem("engine code"))) {
+                    this.gotoScene("good_end");
+                } else if (this.hasItem("engine code")) {
+                    this.gotoScene("bad_end");
+                } else {
+                    this.shake(main_monitor);
+                    this.showMessage("Looks like I need the engine code to get it rolling.");
+                }
+            })
+
+
+        let main_hatch = this.add.image(this.w * 0.3, this.h * 0.8, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("Back to main room");
@@ -405,6 +467,9 @@ class Bridge extends AdventureScene {
             .on('pointerdown', () => {
                 this.gotoScene("main");
             });
+
+        this.item_shine(main_monitor);
+        this.item_shine(main_hatch);
     }
 }
 
@@ -416,11 +481,31 @@ class Engine extends AdventureScene {
         super("engine", "The Engine Room");
     }
 
+    preload() {
+        this.load.path = "./assets/"
+        this.load.image("monitor", "monitor.png");
+    }
+
     onEnter() {
         this.add.text(this.w * 0.2, this.h * 0.3, "This is the engine room");
 
-        this.add.text(this.w * 0.5, this.h * 0.5, "Back to the main room")
-            .setFontSize(this.s * 2)
+        let monitor = this.add.image(this.w * 0.15, this.h * 0.5, "monitor")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("The monitor is missing a red wire.");
+            })
+            .on('pointerdown', () => {
+                if (this.hasItem("wire")) {
+                    this.gainItem("engine code");
+                    this.showMessage("This seems to be the engine code, perfect!");
+                } else {
+                    this.shake(monitor);
+                    this.showMessage("I'll need to get the red wire before doing anything.");
+                }
+            });
+
+
+        let main_hatch = this.add.image(this.w * 0.5, this.h * 0.5, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("Back to main room");
@@ -428,6 +513,9 @@ class Engine extends AdventureScene {
             .on('pointerdown', () => {
                 this.gotoScene("main");
             });
+
+        this.item_shine(main_hatch);
+        this.item_shine(monitor);
     }
 }
 
@@ -464,6 +552,6 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Bridge, Captain, Engine, Supplies, Outro],
+    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Bridge, Captain, Engine, Supplies, Bad_end],
     title: "Adventure Game",
 });
