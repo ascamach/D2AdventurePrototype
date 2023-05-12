@@ -51,7 +51,7 @@ class Beginning extends Phaser.Scene {
     create() {
         this.add.text(50,50, "This is the beginning scene").setFontSize(50);
 
-        this.input.on('pointerdown', () => this.scene.start('outro'));
+        this.input.on('pointerdown', () => this.scene.start('crewmate'));
     }
 }
 
@@ -64,8 +64,31 @@ class Outro extends Phaser.Scene {
         this.add.text(50, 100, "Click anywhere to restart.").setFontSize(20);
         this.input.on('pointerdown', () => this.scene.start('start'));
     }
-}
+} 
 
+class Crewmate extends AdventureScene {
+    constructor() {
+        super("crewmate", "Crewmate's Quarters");
+    }
+
+    onEnter() {
+        let test = this.add.text(this.w * 0.3, this.w * 0.3, "test message")
+            .setFontSize(this.s * 2)
+            .setInteractive()
+            .on('pointerover', () => this.showMessage("This is a test message."))
+            .on('pointerdown', () => {
+                this.showMessage("You have clicked this message.");
+                this.tweens.add({
+                    targets: test,
+                    x: '+=' + this.s,
+                    repeat: 2,
+                    yoyo: true,
+                    ease: 'Sine.inOut',
+                    duration: 100
+                });
+            });
+    }
+}
 
 const game = new Phaser.Game({
     scale: {
@@ -74,6 +97,6 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Start, Intro, Beginning, Outro],
+    scene: [Start, Intro, Beginning, Crewmate, Outro],
     title: "Adventure Game",
 });

@@ -1,4 +1,3 @@
-/*
 class Demo1 extends AdventureScene {
     constructor() {
         super("demo1", "First Room");
@@ -92,7 +91,7 @@ class Demo2 extends AdventureScene {
             .on('pointerdown', () => this.gotoScene('outro'));
     }
 }
-*/
+
 
 class Intro extends Phaser.Scene {
     constructor() {
