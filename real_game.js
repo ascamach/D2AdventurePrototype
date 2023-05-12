@@ -28,7 +28,7 @@ class Intro extends Phaser.Scene {
     }
 
     create() {
-        this.add.text(50, 50, "testing").setFontSize(50);
+        // this.add.text(50, 50, "testing").setFontSize(50);
 
         let logo = this.add.image(game.canvas.width / 2, -600, "logo");
 
@@ -43,14 +43,14 @@ class Intro extends Phaser.Scene {
         });
 
         // 8000
-        this.cameras.main.fade(1000, 0,0,0);
-        this.time.delayedCall(1000, () => this.scene.start('beginning'));
+        this.cameras.main.fade(8000, 0,0,0);
+        this.time.delayedCall(8000, () => this.scene.start('beginning'));
     }
 }
 
 
 // ---------------------------------------------------------
-// Beginning scene, explains the setting for the game
+// Beginning scene
 
 class Beginning extends Phaser.Scene {
     constructor() {
@@ -86,7 +86,7 @@ class Bad_end extends Phaser.Scene {
 
         this.time.delayedCall(10000, () => {
             this.add.text(50, 500, "(Click to restart.)").setFontSize(30);
-            this.input.on('pointerdown', () => this.scene.start('intro'));
+            this.input.on('pointerdown', () => this.scene.start('beginning'));
         });
     }
 } 
@@ -94,19 +94,29 @@ class Bad_end extends Phaser.Scene {
 // --------------------------------------------------------
 // Good ending
 
-/*
-class Good_end extends Phaser.scene {
+class Good_end extends Phaser.Scene {
     constructor() {
         super('good_end');
     }
-
     create() {
-        this.time.delayedCall(500, () =>
-        this.add.text("With the help of the captain")
+        this.add.text(50, 50, "With the help of the nav, you safely made it\nto the next space station.").setFontSize(50);
+
+        this.time.delayedCall(2000, () => 
+            this.add.text(50, 150, "You successfully depart and moe on to your previous duties.").setFontSize(40)
         );
+        
+        this.time.delayedCall(6000, () =>
+            this.add.text(50, 300, "However, it begs the question...").setFontSize(40)
+        );
+
+        this.time.delayedCall(10000, () => {
+        this.add.text(50, 400, "Where did your other crewmates go?").setFontSize(50);
+        
+        this.add.text(50, 900, "Click anywhere to restart.").setFontSize(20);
+        this.input.on('pointerdown', () => this.scene.start('beginning'));
+        });
     }
 }
-*/
 
 // --------------------------------------------------------
 // Crewmate Quarters
@@ -152,6 +162,7 @@ class Crewmate extends AdventureScene {
             .on('pointerover', () => this.showMessage("Go to main area"))
             .on('pointerdown', () => {
                 if(this.hasItem("spacesuit")){
+                    this.loseItem("spacesuit");
                     this.gotoScene("main");
                 } else {
                     this.showMessage("Don't forget your spacesuit!");
@@ -356,7 +367,7 @@ class Supplies extends AdventureScene {
                 this.showMessage("This leads to the supplies room.");
             })
             .on('pointerdown', () => {
-                if (num1.text == 2 && num2.text == 4 && num3.text == 7) {
+                if (num1.text == 2 && num2.text == 5 && num3.text == 7) {
                     this.gotoScene("navigation");
                 } else {
                     this.showMessage("It seems to be locked.");
@@ -448,15 +459,15 @@ class Bridge extends AdventureScene {
                 this.showMessage("This seems to be the control panel for the ship.");
             })
             .on('pointerdown', () => {
-                if (this.hasItem("directions" && this.hasItem("engine code"))) {
+                if (this.hasItem("directions") && this.hasItem("engine code")) {
                     this.gotoScene("good_end");
-                } else if (this.hasItem("engine code")) {
+                } else if (!this.hasItem("directions") && this.hasItem("engine code")) {
                     this.gotoScene("bad_end");
                 } else {
                     this.shake(main_monitor);
-                    this.showMessage("Looks like I need the engine code to get it rolling.");
+                    this.showMessage("Looks like I need the engine code.");
                 }
-            })
+            });
 
 
         let main_hatch = this.add.image(this.w * 0.3, this.h * 0.8, "hatch")
@@ -487,7 +498,7 @@ class Engine extends AdventureScene {
     }
 
     onEnter() {
-        this.add.text(this.w * 0.2, this.h * 0.3, "This is the engine room");
+        // this.add.text(this.w * 0.2, this.h * 0.3, "This is the engine room");
 
         let monitor = this.add.image(this.w * 0.15, this.h * 0.5, "monitor")
             .setInteractive()
@@ -496,6 +507,7 @@ class Engine extends AdventureScene {
             })
             .on('pointerdown', () => {
                 if (this.hasItem("wire")) {
+                    this.loseItem("wire");
                     this.gainItem("engine code");
                     this.showMessage("This seems to be the engine code, perfect!");
                 } else {
@@ -527,11 +539,42 @@ class Captain extends AdventureScene {
         super("captain", "The Captain's Room");
     }
 
-    onEnter() {
-        this.add.text(this.w * 0.2, this.h * 0.3, "This is the captain's room");
+    preload() {
+        this.load.path = "./assets/";
+        this.load.image("captain_bg", "captain_bg.png");
+        this.load.image("note", "note.png");
+        this.load.image("cabinet", "cabinet.png");
+    }
 
-        this.add.text(this.w * 0.5, this.h * 0.5, "Back to the main room")
-            .setFontSize(this.s * 2)
+    onEnter() {
+        this.background = this.add.image(0,0,"captain_bg")
+            .setOrigin(0,0);
+
+        this.background.displayWidth = this.w * 0.75;
+        this.background.displayHeight = this.h;
+
+        // this.add.text(this.w * 0.2, this.h * 0.3, "This is the captain's room");
+
+        let cabinet = this.add.image(this.w *0.1, this.h * 0.5, "cabinet")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("Wonder if the cabinet has anything...");
+            })
+            .on('pointerdown', () => {
+                this.shake(cabinet);
+                this.showMessage("Nothing to be found, huh...");
+            });
+
+        let note = this.add.image(this.w * 0.3, this.h * 0.7, "note")
+            .setInteractive()
+            .on('pointerover', () => {
+                this.showMessage("A note...");
+            })
+            .on('pointerdown', () => {
+                this.gotoScene("note");
+            });
+
+        let main_hatch = this.add.image(this.w * 0.6, this.h * 0.5, "hatch")
             .setInteractive()
             .on('pointerover', () => {
                 this.showMessage("Back to main room");
@@ -539,6 +582,33 @@ class Captain extends AdventureScene {
             .on('pointerdown', () => {
                 this.gotoScene("main");
             });
+
+        this.item_shine(main_hatch);
+        this.item_shine(note);
+        this.item_shine(cabinet);
+    }
+}
+
+// ---------------------------------------------------------
+// Note text
+
+class Note extends Phaser.Scene {
+    constructor() {
+        super('note');
+    }
+    create() {
+        this.add.text(50, 50, "To my fellow Captain ________:\nHow are you doing boss? Hope this letter finds you well.\nHow's the new ship treating you? She's a fine one, ain't she.").setFontSize(40);
+
+        this.add.text(50, 200, "By the way, although you know the code to the navigation room yourself,\nyou should let your crewmates know.").setFontSize(40);
+
+        this.add.text(50, 400, "The digits should be the number of beds in the crewmate quarters,\nnumber of hatches in the main area, and the squad number.").setFontSize(40);
+
+        this.add.text(50, 600, "Well, I guess I'll see you at ______! Have a safe trip.\nFrom,\n\n_________________").setFontSize(40);
+
+        this.time.delayedCall(4000, () => {
+            this.add.text(50, 900, "(return to scene)").setFontSize(25);
+            this.input.on('pointerdown', () => this.gotoScene("captain"));
+        })
     }
 }
 
@@ -552,6 +622,6 @@ const game = new Phaser.Game({
         width: 1920,
         height: 1080
     },
-    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Bridge, Captain, Engine, Supplies, Bad_end],
+    scene: [Start, Intro, Beginning, Crewmate, Main, Navigation, Bridge, Captain, Engine, Supplies, Bad_end, Good_end, Note],
     title: "Adventure Game",
 });
