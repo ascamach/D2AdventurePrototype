@@ -606,9 +606,9 @@ class Note extends Phaser.Scene {
         this.add.text(50, 600, "Well, I guess I'll see you at ______! Have a safe trip.\nFrom,\n\n_________________").setFontSize(40);
 
         this.time.delayedCall(4000, () => {
-            this.add.text(50, 900, "(return to scene)").setFontSize(25);
+            this.add.text(50, 900, "(click to return to scene)").setFontSize(25);
+            this.input.on('pointerdown', () => this.scene.start("captain"));
         });
-        this.input.on('pointerdown', () => this.gotoScene("captain"));
     }
 }
 
